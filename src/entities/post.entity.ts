@@ -19,8 +19,8 @@ export class PostEntity {
   @Column({ type: 'text' })
   description: string;
 
-  @Column({ type: 'enum', enum: Visibility, default: Visibility.Public })
-  visibility: Visibility;
+  @Column()
+  media_id: string[];
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
