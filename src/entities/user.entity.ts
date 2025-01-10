@@ -1,10 +1,17 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { PostEntity } from './post.entity';
 
 export enum account_status {
   public = 'public',
   private = 'private',
 }
-@Entity()
+@Entity('user')
 export class UserEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -22,11 +29,22 @@ export class UserEntity {
   email: string;
 
   @Column({ type: 'varchar', length: 255 })
-  bio: string;
+  password: string;
 
-  @Column({ enum: ['private', 'public'] })
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  bio?: string;
+
+  @Column({ enum: ['private', 'public'], default: account_status.public })
   account_status: account_status;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
+
+  @OneToMany(() => PostEntity, (post) => post.user)
+  posts: PostEntity[];
+
+  @BeforeInsert()
+  insertDate() {
+    this.created_at = new Date();
+  }
 }
